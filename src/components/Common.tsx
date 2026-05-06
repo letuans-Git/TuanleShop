@@ -1,5 +1,7 @@
-import { CheckCircle2, ShieldCheck, Zap, RefreshCw, Facebook, MessageCircle, Search } from 'lucide-react';
-import { motion } from 'motion/react';
+import { CheckCircle2, ShieldCheck, Zap, RefreshCw, Facebook, MessageCircle, Search, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 const featureList = [
   {
@@ -51,15 +53,15 @@ export const Features = () => {
   );
 };
 
-export const Footer = ({ onHomeClick }: { onHomeClick?: () => void }) => {
+export const Footer = ({ onHomeClick, categories = [] }: { onHomeClick?: () => void, categories?: string[] }) => {
   return (
     <footer className="bg-gray-900 py-12 text-white">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
           <div className="flex flex-col items-center md:items-start">
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
+            <Link 
+              to="/"
+              onClick={() => {
                 onHomeClick?.();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -67,7 +69,7 @@ export const Footer = ({ onHomeClick }: { onHomeClick?: () => void }) => {
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-shopee font-bold text-white">T</div>
               <span className="text-xl font-bold tracking-tight">TUANLE <span className="text-shopee text-sm">Shop</span></span>
-            </button>
+            </Link>
             <p className="max-w-xs text-center text-sm text-gray-400 md:text-left">
               Website chia sẻ các sản phẩm chất lượng, với giá ưu đãi cực tốt từ Shopee Việt Nam.
             </p>
@@ -107,14 +109,17 @@ export const Footer = ({ onHomeClick }: { onHomeClick?: () => void }) => {
   );
 };
 
-export const Navbar = ({ onHomeClick, onSearch }: { onHomeClick?: () => void, onSearch?: (query: string) => void }) => {
+export const Navbar = ({ onHomeClick, onSearch, categories = [] }: { onHomeClick?: () => void, onSearch?: (query: string) => void, categories?: string[] }) => {
+  const [showCatalog, setShowCatalog] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
         <div className="flex items-center gap-4 flex-1">
-          <button 
-            onClick={(e) => {
-              e.preventDefault();
+          <Link 
+            to="/"
+            onClick={() => {
               onHomeClick?.();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
@@ -122,7 +127,7 @@ export const Navbar = ({ onHomeClick, onSearch }: { onHomeClick?: () => void, on
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-shopee font-bold text-white">T</div>
             <span className="hidden text-xl font-bold tracking-tight text-gray-900 sm:block">TUANLE <span className="text-shopee text-sm">Shop</span></span>
-          </button>
+          </Link>
 
           <div className="relative flex-1 max-w-md">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -131,7 +136,12 @@ export const Navbar = ({ onHomeClick, onSearch }: { onHomeClick?: () => void, on
             <input
               type="text"
               placeholder="Tìm kiếm sản phẩm..."
-              onChange={(e) => onSearch?.(e.target.value)}
+              onChange={(e) => {
+                onSearch?.(e.target.value);
+                if (window.location.pathname !== '/') {
+                  navigate('/');
+                }
+              }}
               className="block w-full rounded-full border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:border-shopee focus:outline-none focus:ring-2 focus:ring-shopee/20"
             />
           </div>
@@ -140,21 +150,22 @@ export const Navbar = ({ onHomeClick, onSearch }: { onHomeClick?: () => void, on
         <div className="hidden lg:block">
           <ul className="flex gap-8 text-sm font-medium text-gray-600">
             <li>
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
+              <Link 
+                to="/"
+                onClick={() => {
                   onHomeClick?.();
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className="hover:text-shopee transition-colors cursor-pointer px-4 py-1.5 rounded-full border-2 border-gray-100 font-bold"
+                className="hover:text-shopee transition-colors cursor-pointer px-4 py-1.5 rounded-full border-2 border-gray-100 font-bold block"
               >
                 Trang chủ
-              </button>
+              </Link>
             </li>
-            <li>
-              <motion.a 
-                href="#catalog" 
-                className="hover:text-shopee transition-colors relative block px-4 py-1.5 rounded-full border-2 font-bold"
+            <li className="relative">
+              <motion.button 
+                onMouseEnter={() => setShowCatalog(true)}
+                onMouseLeave={() => setShowCatalog(false)}
+                className="hover:text-shopee transition-colors flex items-center gap-1 px-4 py-1.5 rounded-full border-2 font-bold"
                 animate={{ 
                   color: ['#4b5563', '#ee4d2d', '#4b5563'],
                   borderColor: ['rgba(238, 77, 45, 0)', 'rgba(238, 77, 45, 0.6)', 'rgba(238, 77, 45, 0)'],
@@ -167,7 +178,32 @@ export const Navbar = ({ onHomeClick, onSearch }: { onHomeClick?: () => void, on
                 }}
               >
                 Danh mục
-              </motion.a>
+                <ChevronDown size={14} className={`transition-transform ${showCatalog ? 'rotate-180' : ''}`} />
+              </motion.button>
+
+              <AnimatePresence>
+                {showCatalog && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    onMouseEnter={() => setShowCatalog(true)}
+                    onMouseLeave={() => setShowCatalog(false)}
+                    className="absolute left-0 mt-1 w-48 rounded-2xl bg-white p-2 shadow-xl border border-gray-100"
+                  >
+                    {categories.map((category) => (
+                      <Link
+                        key={category}
+                        to={category === 'Tất cả' ? '/' : `/category/${encodeURIComponent(category)}`}
+                        className="block rounded-lg px-4 py-2 hover:bg-orange-50 hover:text-shopee transition-colors"
+                        onClick={() => setShowCatalog(false)}
+                      >
+                        {category}
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </li>
             <li><a href="#features" className="hover:text-shopee transition-colors px-4 py-1.5 rounded-full border-2 border-gray-100 block font-bold">Về chúng tôi</a></li>
           </ul>
