@@ -29,7 +29,13 @@ export const fetchProducts = async (): Promise<Product[]> => {
   try {
     // Add timestamp to bypass cache for "tốc độ cập nhật"
     const timestamp = new Date().getTime();
-    const response = await fetch(`${SHEET_URL}&t=${timestamp}`);
+    const response = await fetch(`${SHEET_URL}${SHEET_URL.includes('?') ? '&' : '?'}t=${timestamp}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
     const csvContent = await response.text();
     
     return new Promise((resolve, reject) => {
