@@ -28,7 +28,7 @@ const featureList = [
 
 export const Features = () => {
   return (
-    <section className="bg-orange-50/50 py-20">
+    <section id="features" className="bg-orange-50/50 py-20">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Lý do nên săn deal qua website này</h2>
@@ -122,6 +122,7 @@ export const Navbar = ({ onHomeClick, onSearch, categories = [] }: { onHomeClick
             onClick={() => {
               onHomeClick?.();
               window.scrollTo({ top: 0, behavior: 'smooth' });
+              window.location.hash = '';
             }}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer flex-shrink-0"
           >
@@ -155,6 +156,7 @@ export const Navbar = ({ onHomeClick, onSearch, categories = [] }: { onHomeClick
                 onClick={() => {
                   onHomeClick?.();
                   window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.location.hash = '';
                 }}
                 className="hover:text-shopee transition-colors cursor-pointer px-4 py-1.5 rounded-full border-2 border-gray-100 font-bold block"
               >
@@ -205,7 +207,24 @@ export const Navbar = ({ onHomeClick, onSearch, categories = [] }: { onHomeClick
                 )}
               </AnimatePresence>
             </li>
-            <li><a href="#features" className="hover:text-shopee transition-colors px-4 py-1.5 rounded-full border-2 border-gray-100 block font-bold">Về chúng tôi</a></li>
+            <li>
+              <Link 
+                to="/"
+                onClick={(e) => {
+                  if (window.location.pathname === '/') {
+                    e.preventDefault();
+                    document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    // When navigating to home from away, we'll let it happen 
+                    // and rely on a scroll effect in App.tsx or just the hash if possible
+                    window.location.hash = 'features';
+                  }
+                }}
+                className="hover:text-shopee transition-colors px-4 py-1.5 rounded-full border-2 border-gray-100 block font-bold"
+              >
+                Về chúng tôi
+              </Link>
+            </li>
           </ul>
         </div>
         

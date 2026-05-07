@@ -163,6 +163,16 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // Handle hash scrolling when navigating back to home
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash === '#features') {
+      setTimeout(() => {
+        document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
+      }, 500); // Wait for page to render
+    }
+  }, [window.location.pathname]);
+
   const handleHomeClick = () => {
     setSearchQuery('');
     navigate('/');
