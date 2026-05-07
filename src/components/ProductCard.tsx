@@ -23,17 +23,28 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     <div
       className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 border border-gray-100"
     >
-      {/* Image Container */}
+      {/* Image/Video Container */}
       <div className="relative aspect-square overflow-hidden bg-gray-100">
-        <img
-          src={product.image || 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=600&auto=format&fit=crop'}
-          alt={product.name}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          referrerPolicy="no-referrer"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=600&auto=format&fit=crop';
-          }}
-        />
+        {product.videoUrl && product.videoUrl.toLowerCase().endsWith('.mp4') ? (
+          <video
+            src={product.videoUrl}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            muted
+            autoPlay
+            loop
+            playsInline
+          />
+        ) : (
+          <img
+            src={product.image || 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=600&auto=format&fit=crop'}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            referrerPolicy="no-referrer"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560393464-5c69a73c5770?q=80&w=600&auto=format&fit=crop';
+            }}
+          />
+        )}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           {product.badges.map((badge) => (
             <span

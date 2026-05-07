@@ -5,6 +5,7 @@ export interface Product {
   name: string;
   description: string;
   image: string;
+  videoUrl?: string;
   originalPrice: number;
   discountPrice: number;
   affiliateUrl: string;
@@ -41,6 +42,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
             name: row['Tên sản phẩm'] || '',
             description: '', // Sheet doesn't have description column in sample
             image: row['Ảnh sản phẩm'] || '',
+            videoUrl: row['Video sản phẩm'] || '',
             originalPrice: parsePrice(row['Giá gốc']),
             discountPrice: parsePrice(row['Giá ưu đãi']),
             affiliateUrl: row['Link Affiliate'] || '',
